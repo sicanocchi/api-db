@@ -45,12 +45,12 @@ func DeleteAlbumByID(db *gorm.DB, id string) error {
 
 }
 
-//------------------------------------------------------------------------implementare update passandogli i vari campi
-
-func UpdateAlbum(db *gorm.DB, id string) (model.Album, error) {
+func UpdateAlbum(db *gorm.DB, id string, alb model.Album) error {
 	var album model.Album
-	if err := db.Where("id = ?", id).Find(&album).Error; err != nil {
-		return model.Album{}, err
+	var err error
+	if err = db.Where("id = ?", id).First(&album).Error; err != nil {
+		return err
 	}
-	return model.Album{}, nil
+	return db.Model(&album).Updates(model.Album{Title: alb.Title, Artist: alb.Artist, Price: alb.Price}).Error
+
 }

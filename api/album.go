@@ -3,6 +3,7 @@ package api
 import (
 	"api-db/datasource"
 	"api-db/model"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -38,6 +39,7 @@ func GetAlbumByID(c *gin.Context) {
 func PostAlbums(c *gin.Context) {
 	var newAlbum model.Album
 	if err := c.BindJSON(&newAlbum); err != nil {
+		log.Println(c.BindJSON(&newAlbum))
 		c.IndentedJSON(http.StatusBadRequest, err)
 		return
 	}
@@ -56,16 +58,14 @@ func DeleteAlbumByID(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, nil)
 }
 
-// ------------creare questa
 func UpdateAlbum(c *gin.Context) {
 	id := c.Param("id")
 	var newAlbum model.Album
-	if err := c.ShouldBindJSON(&newAlbum); err != nil {
-		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+	if err := c.BindJSON(&newAlbum); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, err)
 		return
 	}
-	// gli dovrò passare i campi della nbuova variabile che vorrò cambiare
-	if _, err := datasource.UpdateAlbum(datasource.DB, id); err != nil {
+	if err := datasource.UpdateAlbum(datasource.DB, id, newAlbum); err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, err)
 	}
 	c.IndentedJSON(http.StatusCreated, newAlbum)
