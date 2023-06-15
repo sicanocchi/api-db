@@ -24,7 +24,7 @@ func AllAlbums(db *gorm.DB) ([]model.Album, error) {
 	return albums, nil
 }
 
-func AlbumByID(db *gorm.DB, id string) (model.Album, error) {
+func AlbumByID(db *gorm.DB, id int) (model.Album, error) {
 	var alb model.Album
 	if err := db.Where("id = ?", id).Find(&alb).Error; err != nil {
 		return model.Album{}, err
@@ -36,7 +36,7 @@ func AddAlbum(db *gorm.DB, alb *model.Album) error {
 	return db.Create(alb).Error
 }
 
-func DeleteAlbumByID(db *gorm.DB, id string) error {
+func DeleteAlbumByID(db *gorm.DB, id int) error {
 	var albums []model.Album
 	if err := db.Find(&albums).Error; err != nil {
 		return err
@@ -45,7 +45,7 @@ func DeleteAlbumByID(db *gorm.DB, id string) error {
 
 }
 
-func UpdateAlbum(db *gorm.DB, id string, alb model.Album) error {
+func UpdateAlbum(db *gorm.DB, id int, alb model.Album) error {
 	var album model.Album
 	var err error
 	if err = db.Where("id = ?", id).First(&album).Error; err != nil {

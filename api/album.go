@@ -5,6 +5,7 @@ import (
 	"api-db/model"
 	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -27,9 +28,13 @@ func GetAlbumsByArtist(c *gin.Context) {
 }
 
 func GetAlbumByID(c *gin.Context) {
-	id := c.Param("id")
 	var album model.Album
 	var err error
+	var id int
+	if id, err = strconv.Atoi(c.Param("id")); err != nil {
+		return
+	}
+
 	if album, err = datasource.AlbumByID(datasource.DB, id); err != nil {
 		c.IndentedJSON(http.StatusNotFound, err)
 	}
@@ -51,21 +56,29 @@ func PostAlbums(c *gin.Context) {
 }
 
 func DeleteAlbumByID(c *gin.Context) {
-	id := c.Param("id")
-	if err := datasource.DeleteAlbumByID(datasource.DB, id); err != nil {
+	var id int
+	var err error
+	if id, err = strconv.Atoi(c.Param("id")); err != nil {
+		return
+	}
+	if err = datasource.DeleteAlbumByID(datasource.DB, id); err != nil {
 		c.IndentedJSON(http.StatusNotFound, err)
 	}
 	c.IndentedJSON(http.StatusOK, nil)
 }
 
 func UpdateAlbum(c *gin.Context) {
-	id := c.Param("id")
 	var newAlbum model.Album
-	if err := c.BindJSON(&newAlbum); err != nil {
+	var id int
+	var err error
+	if id, err = strconv.Atoi(c.Param("id")); err != nil {
+		return
+	}
+	if err = c.BindJSON(&newAlbum); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, err)
 		return
 	}
-	if err := datasource.UpdateAlbum(datasource.DB, id, newAlbum); err != nil {
+	if err = datasource.UpdateAlbum(datasource.DB, id, newAlbum); err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, err)
 	}
 	c.IndentedJSON(http.StatusCreated, newAlbum)
