@@ -38,9 +38,9 @@ func AddAlbum(db *gorm.DB, alb *model.Album) error {
 
 func DeleteAlbumByID(db *gorm.DB, id int) error {
 	var albums []model.Album
-	if err := db.Find(&albums).Error; err != nil {
+	/*if err := db.Find(&albums).Error; err != nil {
 		return err
-	}
+	}*/
 	return db.Delete(&albums, "id = ?", id).Error
 
 }
