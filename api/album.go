@@ -10,27 +10,12 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func GetAlbumsByArtist(c *gin.Context) {
+func GetAlbums(c *gin.Context) {
 	var albums []model.Album
 	var err error
-	nomeArtista := c.Query("nome")
-	cognomeArtista := c.Query("cognome")
-	if nomeArtista != "" && cognomeArtista != "" {
-		if albums, err = datasource.AlbumsByArtist(datasource.DB, nomeArtista, cognomeArtista); err != nil {
-			c.IndentedJSON(http.StatusNotFound, err)
-		}
-	} else if nomeArtista != "" && cognomeArtista == "" {
-		if albums, err = datasource.AlbumsByArtistNome(datasource.DB, nomeArtista); err != nil {
-			c.IndentedJSON(http.StatusNotFound, err)
-		}
-	} else if nomeArtista == "" && cognomeArtista != "" {
-		if albums, err = datasource.AlbumsByArtistCognome(datasource.DB, cognomeArtista); err != nil {
-			c.IndentedJSON(http.StatusNotFound, err)
-		}
-	} else {
-		if albums, err = datasource.AllAlbums(datasource.DB); err != nil {
-			c.IndentedJSON(http.StatusNotFound, err)
-		}
+	titolo := c.Query("titolo")
+	if albums, err = datasource.AllAlbums(datasource.DB, titolo); err != nil {
+		c.IndentedJSON(http.StatusNotFound, err)
 	}
 
 	c.IndentedJSON(http.StatusOK, albums)

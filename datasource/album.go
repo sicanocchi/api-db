@@ -8,56 +8,11 @@ import (
 
 var DB *gorm.DB
 
-func AlbumsByArtist(db *gorm.DB, nome string, cognome string) ([]model.Album, error) {
+func AllAlbums(db *gorm.DB, titolo string) ([]model.Album, error) {
 	var albums []model.Album
-	var artisti []model.Artista
-	var idArtisti []int
-	if err := db.Where("nome = ? AND cognome =?", nome, cognome).Find(&artisti).Error; err != nil {
-		return nil, err
+	if titolo != "" {
+		db = db.Where("titolo =?", titolo)
 	}
-	for _, v := range artisti {
-		idArtisti = append(idArtisti, v.ID)
-	}
-	if err := db.Where("artista_id IN ?", idArtisti).Find(&albums).Error; err != nil {
-		return nil, err
-	}
-	return albums, nil
-}
-
-func AlbumsByArtistNome(db *gorm.DB, nome string) ([]model.Album, error) {
-	var albums []model.Album
-	var artisti []model.Artista
-	var idArtisti []int
-	if err := db.Where("nome = ?", nome).Find(&artisti).Error; err != nil {
-		return nil, err
-	}
-	for _, v := range artisti {
-		idArtisti = append(idArtisti, v.ID)
-	}
-	if err := db.Where("artista_id IN ?", idArtisti).Find(&albums).Error; err != nil {
-		return nil, err
-	}
-	return albums, nil
-}
-
-func AlbumsByArtistCognome(db *gorm.DB, cognome string) ([]model.Album, error) {
-	var albums []model.Album
-	var artisti []model.Artista
-	var idArtisti []int
-	if err := db.Where("cognome =?", cognome).Find(&artisti).Error; err != nil {
-		return nil, err
-	}
-	for _, v := range artisti {
-		idArtisti = append(idArtisti, v.ID)
-	}
-	if err := db.Where("artista_id IN ?", idArtisti).Find(&albums).Error; err != nil {
-		return nil, err
-	}
-	return albums, nil
-}
-
-func AllAlbums(db *gorm.DB) ([]model.Album, error) {
-	var albums []model.Album
 	if err := db.Find(&albums).Error; err != nil {
 		return nil, err
 	}

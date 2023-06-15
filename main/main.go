@@ -20,7 +20,7 @@ func main() {
 	router := gin.Default()
 
 	//----------------chiamate per album-------------------
-	router.GET("/albums", api.GetAlbumsByArtist)
+	router.GET("/albums", api.GetAlbums)
 
 	router.GET("/albums/:id", api.GetAlbumByID)
 
