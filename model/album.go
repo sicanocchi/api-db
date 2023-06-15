@@ -8,17 +8,17 @@ type Album struct {
 }
 
 type Artista struct {
-	ID               int    `json:"id"`
-	Nome             string `json:"nome"`
-	Cognome          string `json:"cognome"`
-	DataNascita      string `json:"dataNascita"`
-	CasaDiscografica int    `json:"CasaDiscografica"`
+	ID                 int    `json:"id"`
+	Nome               string `json:"nome"`
+	Cognome            string `json:"cognome"`
+	DataNascita        int    `json:"data_nascita"`
+	CasaDiscograficaID int    `json:"casa_discografica_id"`
 }
 
 type CasaDiscografica struct {
 	ID             int    `json:"id"`
 	Nome           string `json:"nome"`
-	AnnoFondazione string `json:"annoFondazione"`
+	DataFondazione int    `json:"data_fondazione"`
 }
 
 func (album Album) TableName() string {
@@ -30,5 +30,5 @@ func (artista Artista) TableName() string {
 }
 
 func (casaDiscografica CasaDiscografica) TableName() string {
-	return "casaDiscografica"
+	return "casadiscografica"
 }

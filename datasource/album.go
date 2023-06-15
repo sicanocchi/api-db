@@ -10,7 +10,15 @@ var DB *gorm.DB
 
 func AlbumsByArtist(db *gorm.DB, nome string, cognome string) ([]model.Album, error) {
 	var albums []model.Album
-	if err := db.InnerJoins("Artista").Where("artista.nome = ? AND artista.cognome =?", nome, cognome).Find(&albums).Error; err != nil {
+	var artisti []model.Artista
+	var idArtisti []int
+	if err := db.Where("nome = ? AND cognome =?", nome, cognome).Find(&artisti).Error; err != nil {
+		return nil, err
+	}
+	for _, v := range artisti {
+		idArtisti = append(idArtisti, v.ID)
+	}
+	if err := db.Where("artista_id IN ?", idArtisti).Find(&albums).Error; err != nil {
 		return nil, err
 	}
 	return albums, nil
@@ -18,7 +26,15 @@ func AlbumsByArtist(db *gorm.DB, nome string, cognome string) ([]model.Album, er
 
 func AlbumsByArtistNome(db *gorm.DB, nome string) ([]model.Album, error) {
 	var albums []model.Album
-	if err := db.InnerJoins("Artista").Where("artista.nome = ?", nome).Find(&albums).Error; err != nil {
+	var artisti []model.Artista
+	var idArtisti []int
+	if err := db.Where("nome = ?", nome).Find(&artisti).Error; err != nil {
+		return nil, err
+	}
+	for _, v := range artisti {
+		idArtisti = append(idArtisti, v.ID)
+	}
+	if err := db.Where("artista_id IN ?", idArtisti).Find(&albums).Error; err != nil {
 		return nil, err
 	}
 	return albums, nil
@@ -26,7 +42,15 @@ func AlbumsByArtistNome(db *gorm.DB, nome string) ([]model.Album, error) {
 
 func AlbumsByArtistCognome(db *gorm.DB, cognome string) ([]model.Album, error) {
 	var albums []model.Album
-	if err := db.InnerJoins("Artista").Where("artista.cognome = ?", cognome).Find(&albums).Error; err != nil {
+	var artisti []model.Artista
+	var idArtisti []int
+	if err := db.Where("cognome =?", cognome).Find(&artisti).Error; err != nil {
+		return nil, err
+	}
+	for _, v := range artisti {
+		idArtisti = append(idArtisti, v.ID)
+	}
+	if err := db.Where("artista_id IN ?", idArtisti).Find(&albums).Error; err != nil {
 		return nil, err
 	}
 	return albums, nil
@@ -61,20 +85,15 @@ func DeleteAlbumByID(db *gorm.DB, id int) error {
 
 }
 
-func UpdateAlbum(db *gorm.DB, id int, alb model.Album) error {
-	var album model.Album
-	var err error
-	if err = db.Where("id = ?", id).First(&album).Error; err != nil {
-		return err
-	}
-	return db.Model(&album).Save(&alb).Error
+func UpdateAlbum(db *gorm.DB, alb model.Album) error {
+	return db.Save(&alb).Error
 
 }
 
 // -----------------nuove query artisti---------------------------------
 func ArtistiByRagione(db *gorm.DB, nome string, cognome string) ([]model.Artista, error) {
 	var artisti []model.Artista
-	if err := db.Where("nome = ? and cognome =?", nome, cognome).Find(&artisti).Error; err != nil {
+	if err := db.Where("nome = ? AND cognome =?", nome, cognome).Find(&artisti).Error; err != nil {
 		return nil, err
 	}
 	return artisti, nil
@@ -125,19 +144,18 @@ func DeleteArtistaByID(db *gorm.DB, id int) error {
 
 }
 
-func UpdateArtista(db *gorm.DB, id int, art model.Artista) error {
-	var artista model.Artista
-	var err error
-	if err = db.Where("id = ?", id).First(&artista).Error; err != nil {
-		return err
-	}
-	return db.Model(&artista).Save(&art).Error
+func UpdateArtista(db *gorm.DB, art model.Artista) error {
+	return db.Save(&art).Error
 
 }
 
 func ArtistiByCasaDiscografica(db *gorm.DB, nome string) ([]model.Artista, error) {
 	var artisti []model.Artista
-	if err := db.InnerJoins("casaDiscografica").Where("casaDiscografica.nome = ?", nome).Find(&artisti).Error; err != nil {
+	var cDisco model.CasaDiscografica
+	if err := db.Where("nome = ?", nome).Find(&cDisco).Error; err != nil {
+		return nil, err
+	}
+	if err := db.Where("casa_discografica_id = ?", cDisco.ID).Find(&artisti).Error; err != nil {
 		return nil, err
 	}
 	return artisti, nil
@@ -181,12 +199,7 @@ func DeleteCasaDiscograficaByID(db *gorm.DB, id int) error {
 
 }
 
-func UpdateCasaDiscografica(db *gorm.DB, id int, cDisco model.CasaDiscografica) error {
-	var casaDiscografica model.CasaDiscografica
-	var err error
-	if err = db.Where("id = ?", id).First(&casaDiscografica).Error; err != nil {
-		return err
-	}
-	return db.Model(&casaDiscografica).Save(&cDisco).Error
+func UpdateCasaDiscografica(db *gorm.DB, cDisco model.CasaDiscografica) error {
+	return db.Save(&cDisco).Error
 
 }

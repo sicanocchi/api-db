@@ -87,13 +87,19 @@ func UpdateAlbum(c *gin.Context) {
 		c.IndentedJSON(http.StatusBadRequest, err)
 		return
 	}
-	if err = datasource.UpdateAlbum(datasource.DB, id, newAlbum); err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, err)
+	if id == newAlbum.ID {
+		if err = datasource.UpdateAlbum(datasource.DB, newAlbum); err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, err)
+		}
+	} else {
+		c.IndentedJSON(http.StatusBadRequest, err)
+		return
 	}
-	c.IndentedJSON(http.StatusCreated, newAlbum)
+	c.IndentedJSON(http.StatusOK, newAlbum)
 }
 
 // -----------api artisti--------------------
+/*
 func GetArtistiByCasaDiscografica(c *gin.Context) {
 	var artisti []model.Artista
 	var err error
@@ -110,21 +116,27 @@ func GetArtistiByCasaDiscografica(c *gin.Context) {
 
 	c.IndentedJSON(http.StatusOK, artisti)
 }
+*/
 
 func GetArtisti(c *gin.Context) {
 	var artisti []model.Artista
 	var err error
 	nomeArtista := c.Query("nome")
 	cognomeArtista := c.Query("cognome")
-	if nomeArtista != "" && cognomeArtista != "" {
+	nomeCasaDiscografica := c.Query("nome_casa")
+	if nomeCasaDiscografica != "" {
+		if artisti, err = datasource.ArtistiByCasaDiscografica(datasource.DB, nomeCasaDiscografica); err != nil {
+			c.IndentedJSON(http.StatusNotFound, err)
+		}
+	} else if nomeArtista != "" && cognomeArtista != "" {
 		if artisti, err = datasource.ArtistiByRagione(datasource.DB, nomeArtista, cognomeArtista); err != nil {
 			c.IndentedJSON(http.StatusNotFound, err)
 		}
-	} else if nomeArtista == "" && cognomeArtista != "" {
+	} else if nomeArtista != "" && cognomeArtista == "" {
 		if artisti, err = datasource.ArtistiByNome(datasource.DB, nomeArtista); err != nil {
 			c.IndentedJSON(http.StatusNotFound, err)
 		}
-	} else if nomeArtista != "" && cognomeArtista == "" {
+	} else if nomeArtista == "" && cognomeArtista != "" {
 		if artisti, err = datasource.ArtistiByCognome(datasource.DB, cognomeArtista); err != nil {
 			c.IndentedJSON(http.StatusNotFound, err)
 		}
@@ -188,8 +200,13 @@ func UpdateArtista(c *gin.Context) {
 		c.IndentedJSON(http.StatusBadRequest, err)
 		return
 	}
-	if err = datasource.UpdateArtista(datasource.DB, id, newArtista); err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, err)
+	if id != newArtista.ID {
+		c.IndentedJSON(http.StatusBadRequest, err)
+		return
+	} else {
+		if err = datasource.UpdateArtista(datasource.DB, newArtista); err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, err)
+		}
 	}
 	c.IndentedJSON(http.StatusCreated, newArtista)
 }
@@ -263,8 +280,13 @@ func UpdateCasaDiscografica(c *gin.Context) {
 		c.IndentedJSON(http.StatusBadRequest, err)
 		return
 	}
-	if err = datasource.UpdateCasaDiscografica(datasource.DB, id, newCasaDiscografica); err != nil {
-		c.IndentedJSON(http.StatusInternalServerError, err)
+	if id == newCasaDiscografica.ID {
+		if err = datasource.UpdateCasaDiscografica(datasource.DB, newCasaDiscografica); err != nil {
+			c.IndentedJSON(http.StatusInternalServerError, err)
+		}
+	} else {
+		c.IndentedJSON(http.StatusBadRequest, err)
+		return
 	}
 	c.IndentedJSON(http.StatusCreated, newCasaDiscografica)
 }

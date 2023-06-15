@@ -31,8 +31,6 @@ func main() {
 	router.DELETE("/albums/:id", api.DeleteAlbumByID)
 
 	//----------------chiamate per artisti-------------------
-	router.GET("/artistiCasa", api.GetArtistiByCasaDiscografica)
-
 	router.GET("/artisti", api.GetArtisti)
 
 	router.GET("/artisti/:id", api.GetArtistaByID)
