@@ -14,7 +14,8 @@ func GetAlbums(c *gin.Context) {
 	var albums []model.Album
 	var err error
 	titolo := c.Query("titolo")
-	if albums, err = datasource.AllAlbums(datasource.DB, titolo); err != nil {
+	artista := c.Query("lista")
+	if albums, err = datasource.AllAlbums(datasource.DB, titolo, artista); err != nil {
 		c.IndentedJSON(http.StatusNotFound, err)
 	}
 
@@ -102,35 +103,15 @@ func GetArtistiByCasaDiscografica(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, artisti)
 }
 */
-
 func GetArtisti(c *gin.Context) {
 	var artisti []model.Artista
 	var err error
 	nomeArtista := c.Query("nome")
 	cognomeArtista := c.Query("cognome")
-	nomeCasaDiscografica := c.Query("nome_casa")
-	if nomeCasaDiscografica != "" {
-		if artisti, err = datasource.ArtistiByCasaDiscografica(datasource.DB, nomeCasaDiscografica); err != nil {
-			c.IndentedJSON(http.StatusNotFound, err)
-		}
-	} else if nomeArtista != "" && cognomeArtista != "" {
-		if artisti, err = datasource.ArtistiByRagione(datasource.DB, nomeArtista, cognomeArtista); err != nil {
-			c.IndentedJSON(http.StatusNotFound, err)
-		}
-	} else if nomeArtista != "" && cognomeArtista == "" {
-		if artisti, err = datasource.ArtistiByNome(datasource.DB, nomeArtista); err != nil {
-			c.IndentedJSON(http.StatusNotFound, err)
-		}
-	} else if nomeArtista == "" && cognomeArtista != "" {
-		if artisti, err = datasource.ArtistiByCognome(datasource.DB, cognomeArtista); err != nil {
-			c.IndentedJSON(http.StatusNotFound, err)
-		}
-	} else {
-		if artisti, err = datasource.AllArtist(datasource.DB); err != nil {
-			c.IndentedJSON(http.StatusNotFound, err)
-		}
+	listaAlbum := c.Query("lista")
+	if artisti, err = datasource.AllArtist(datasource.DB, nomeArtista, cognomeArtista, listaAlbum); err != nil {
+		c.IndentedJSON(http.StatusNotFound, err)
 	}
-
 	c.IndentedJSON(http.StatusOK, artisti)
 }
 
@@ -211,18 +192,13 @@ func GetCasaDiscograficaByID(c *gin.Context) {
 	c.IndentedJSON(http.StatusFound, casaDiscografica)
 }
 
-func GetCasaByNome(c *gin.Context) {
+func GetCasa(c *gin.Context) {
 	var casaDiscografica []model.CasaDiscografica
 	var err error
 	nomeCasa := c.Query("nome")
-	if nomeCasa != "" {
-		if casaDiscografica, err = datasource.CaseByNome(datasource.DB, nomeCasa); err != nil {
-			c.IndentedJSON(http.StatusNotFound, err)
-		}
-	} else {
-		if casaDiscografica, err = datasource.AllCaseDiscografiche(datasource.DB); err != nil {
-			c.IndentedJSON(http.StatusNotFound, err)
-		}
+	lista := c.Query("lista")
+	if casaDiscografica, err = datasource.AllCaseDiscografiche(datasource.DB, nomeCasa, lista); err != nil {
+		c.IndentedJSON(http.StatusNotFound, err)
 	}
 
 	c.IndentedJSON(http.StatusOK, casaDiscografica)

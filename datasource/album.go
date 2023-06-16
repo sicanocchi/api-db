@@ -8,10 +8,13 @@ import (
 
 var DB *gorm.DB
 
-func AllAlbums(db *gorm.DB, titolo string) ([]model.Album, error) {
+func AllAlbums(db *gorm.DB, titolo string, lista string) ([]model.Album, error) {
 	var albums []model.Album
 	if titolo != "" {
 		db = db.Where("titolo =?", titolo)
+	}
+	if lista != "" && lista == "t" {
+		db = db.Preload("Artista")
 	}
 	if err := db.Find(&albums).Error; err != nil {
 		return nil, err
@@ -46,6 +49,7 @@ func UpdateAlbum(db *gorm.DB, alb model.Album) error {
 }
 
 // -----------------nuove query artisti---------------------------------
+/*
 func ArtistiByRagione(db *gorm.DB, nome string, cognome string) ([]model.Artista, error) {
 	var artisti []model.Artista
 	if err := db.Where("nome = ? AND cognome =?", nome, cognome).Find(&artisti).Error; err != nil {
@@ -68,10 +72,19 @@ func ArtistiByCognome(db *gorm.DB, cognome string) ([]model.Artista, error) {
 		return nil, err
 	}
 	return artisti, nil
-}
+}*/
 
-func AllArtist(db *gorm.DB) ([]model.Artista, error) {
+func AllArtist(db *gorm.DB, nome string, cognome string, lista string) ([]model.Artista, error) {
 	var artisti []model.Artista
+	if nome != "" {
+		db = db.Where("nome =?", nome)
+	}
+	if cognome != "" {
+		db = db.Where("cognome =?", cognome)
+	}
+	if lista != "" && lista == "t" {
+		db = db.Preload("Album")
+	}
 	if err := db.Find(&artisti).Error; err != nil {
 		return nil, err
 	}
@@ -104,6 +117,7 @@ func UpdateArtista(db *gorm.DB, art model.Artista) error {
 
 }
 
+/*
 func ArtistiByCasaDiscografica(db *gorm.DB, nome string) ([]model.Artista, error) {
 	var artisti []model.Artista
 	var cDisco model.CasaDiscografica
@@ -115,18 +129,16 @@ func ArtistiByCasaDiscografica(db *gorm.DB, nome string) ([]model.Artista, error
 	}
 	return artisti, nil
 }
-
+*/
 // -----------------nuove query casa discografica-----------------------------
-func CaseByNome(db *gorm.DB, nome string) ([]model.CasaDiscografica, error) {
+func AllCaseDiscografiche(db *gorm.DB, nome string, lista string) ([]model.CasaDiscografica, error) {
 	var caseDiscografiche []model.CasaDiscografica
-	if err := db.Where("nome = ?", nome).Find(&caseDiscografiche).Error; err != nil {
-		return nil, err
+	if nome != "" {
+		db = db.Where("nome=?", nome)
 	}
-	return caseDiscografiche, nil
-}
-
-func AllCaseDiscografiche(db *gorm.DB) ([]model.CasaDiscografica, error) {
-	var caseDiscografiche []model.CasaDiscografica
+	if lista != "" && lista == "t" {
+		db = db.Preload("Artista")
+	}
 	if err := db.Find(&caseDiscografiche).Error; err != nil {
 		return nil, err
 	}

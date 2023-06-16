@@ -42,7 +42,7 @@ func main() {
 	router.DELETE("/artisti/:id", api.DeleteArtistaByID)
 
 	//----------------chiamate per case discografiche-------------------
-	router.GET("/caseDiscografiche", api.GetCasaByNome)
+	router.GET("/caseDiscografiche", api.GetCasa)
 
 	router.GET("/caseDiscografiche/:id", api.GetCasaDiscograficaByID)
 
