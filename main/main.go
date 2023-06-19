@@ -29,37 +29,37 @@ func main() {
 	protected.GET("/user", api.CurrentUser)
 
 	//----------------chiamate per album-------------------
-	router.GET("/albums", api.GetAlbums)
+	protected.GET("/albums", api.GetAlbums)
 
-	router.GET("/albums/:id", api.GetAlbumByID)
+	protected.GET("/albums/:id", api.GetAlbumByID)
 
-	router.POST("/albums", api.PostAlbums)
+	protected.POST("/albums", api.PostAlbums)
 
-	router.PUT("/albums/:id", api.UpdateAlbum)
+	protected.PUT("/albums/:id", api.UpdateAlbum)
 
-	router.DELETE("/albums/:id", api.DeleteAlbumByID)
+	protected.DELETE("/albums/:id", api.DeleteAlbumByID)
 
 	//----------------chiamate per artisti-------------------
-	router.GET("/artisti", api.GetArtisti)
+	protected.GET("/artisti", api.GetArtisti)
 
-	router.GET("/artisti/:id", api.GetArtistaByID)
+	protected.GET("/artisti/:id", api.GetArtistaByID)
 
-	router.POST("/artisti", api.PostArtista)
+	protected.POST("/artisti", api.PostArtista)
 
-	router.PUT("/artisti/:id", api.UpdateArtista)
+	protected.PUT("/artisti/:id", api.UpdateArtista)
 
-	router.DELETE("/artisti/:id", api.DeleteArtistaByID)
+	protected.DELETE("/artisti/:id", api.DeleteArtistaByID)
 
 	//----------------chiamate per case discografiche-------------------
-	router.GET("/caseDiscografiche", api.GetCasa)
+	protected.GET("/caseDiscografiche", api.GetCasa)
 
-	router.GET("/caseDiscografiche/:id", api.GetCasaDiscograficaByID)
+	protected.GET("/caseDiscografiche/:id", api.GetCasaDiscograficaByID)
 
-	router.POST("/caseDiscografiche", api.PostCasaDiscografica)
+	protected.POST("/caseDiscografiche", api.PostCasaDiscografica)
 
-	router.PUT("/caseDiscografiche/:id", api.UpdateCasaDiscografica)
+	protected.PUT("/caseDiscografiche/:id", api.UpdateCasaDiscografica)
 
-	router.DELETE("/caseDiscografiche/:id", api.DeleteCasaDiscograficaByID)
+	protected.DELETE("/caseDiscografiche/:id", api.DeleteCasaDiscograficaByID)
 
 	router.Run("localhost:8080")
 
