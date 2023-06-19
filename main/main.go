@@ -10,14 +10,23 @@ import (
 )
 
 func main() {
+	var err error
 
 	dsn := "host= localhost user= postgres password= root  dbname= recordings  port= 5432  sslmode=disable"
-	var err error
+
 	if datasource.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{}); err != nil {
 		panic(err)
 	}
 
 	router := gin.Default()
+
+	router.POST("/register", api.Register)
+	router.POST("/login", api.Login)
+
+	protected := router.Group("/api/admin")
+
+	protected.Use(api.JwtAuthMiddleware())
+	protected.GET("/user", api.CurrentUser)
 
 	//----------------chiamate per album-------------------
 	router.GET("/albums", api.GetAlbums)

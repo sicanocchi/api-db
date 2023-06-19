@@ -25,3 +25,9 @@ CREATE TABLE casaDiscografica(
     data_fondazione int,
     constraint casa_pk primary key (id)
 );
+
+CREATE TABLE users(
+    id serial not null,
+    username text,
+    password text
+);
