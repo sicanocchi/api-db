@@ -3,8 +3,10 @@ package main
 import (
 	"api-db/api"
 	"api-db/datasource"
+	"log"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
@@ -12,6 +14,11 @@ import (
 func main() {
 	var err error
 
+	err = godotenv.Load(".env")
+
+	if err != nil {
+		log.Fatalf("Error loading .env file")
+	}
 	dsn := "host= localhost user= postgres password= root  dbname= recordings  port= 5432  sslmode=disable"
 
 	if datasource.DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{}); err != nil {

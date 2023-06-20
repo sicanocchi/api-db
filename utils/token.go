@@ -2,6 +2,7 @@ package utils
 
 import (
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -13,7 +14,11 @@ import (
 func GenerateToken(user_id int) (string, error) {
 
 	// controllare GETENV
-	token_lifespan := 6
+	//token_lifespan := 6
+	token_lifespan, err := strconv.Atoi(os.Getenv("TOKEN_HOUR_LIFESPAN"))
+	if err != nil {
+		return "", err
+	}
 
 	claims := jwt.MapClaims{}
 	claims["authorized"] = true
@@ -21,7 +26,8 @@ func GenerateToken(user_id int) (string, error) {
 	claims["exp"] = time.Now().Add(time.Hour * time.Duration(token_lifespan)).Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString([]byte("yoursecretstring"))
+	//return token.SignedString([]byte("yoursecretstring"))
+	return token.SignedString([]byte(os.Getenv("API_SECRET")))
 
 }
 
@@ -31,7 +37,8 @@ func TokenValid(c *gin.Context) error {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		} // controllare GETENV
-		return []byte("yoursecretstring"), nil
+		return []byte(os.Getenv("API_SECRET")), nil
+		//return []byte("yoursecretstring"), nil
 	})
 	if err != nil {
 		return err
@@ -58,7 +65,8 @@ func ExtractTokenID(c *gin.Context) (int, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
 		} // controllare GETENV
-		return []byte("yoursecretstring"), nil
+		return []byte(os.Getenv("API_SECRET")), nil
+		//return []byte("yoursecretstring"), nil
 	})
 	if err != nil {
 		return 0, err
