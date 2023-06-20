@@ -16,7 +16,8 @@ func GetUserByID(db *gorm.DB, uid int) (model.User, error) {
 	var u model.User
 
 	if err := db.First(&u, uid).Error; err != nil {
-		return u, errors.New("User not found!")
+		x := errors.New("User not found!")
+		return u, x
 	}
 
 	u.PrepareGive()
