@@ -29,5 +29,13 @@ CREATE TABLE casaDiscografica(
 CREATE TABLE users(
     id serial not null,
     username text,
-    password text
+    password text,
+    constraint utente_pk primary key (id)
+);
+
+CREATE table preferenze(
+utente_id int,
+album_id int,
+constraint utente_fk foreign key (utente_id) references users(id)on delete cascade,
+constraint album_fk foreign key (album_id) references album(id)on delete cascade
 );

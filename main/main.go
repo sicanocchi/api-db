@@ -61,6 +61,13 @@ func main() {
 
 	protected.DELETE("/caseDiscografiche/:id", api.DeleteCasaDiscograficaByID)
 
+	//----------------chiamate per preferenze-------------------
+	protected.GET("/preferenze", api.GetPreferenze)
+
+	protected.POST("/preferenze/:id", api.PostAlbumsOnPrefer)
+
+	protected.DELETE("/preferenze/:id", api.DeletePreferenzaByAlbumID)
+
 	router.Run("localhost:8080")
 
 }
